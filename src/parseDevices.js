@@ -9,6 +9,10 @@ const parseDevices = function(out){
 		out = out.slice(j);
 		i = out.indexOf('name: <');
 	}
+	for(let i=devices.length-1; i>=0; i--){
+		if(devices[i].indexOf('hdmi') > 0)
+			devices.splice(i, 1);
+	}
 	return devices;
 };
 
