@@ -1,43 +1,43 @@
 "use strict";
-const exec = require('child_process').exec;
-const findStreamByAppName = require('./findStreamByAppName');
-const parseStreams = require('./parseStreams');
-const parseDevices = require('./parseDevices');
+const getOutputStreams = require("./utils/get-output-streams");
+const getOutputDevices = require("./utils/get-output-devices");
+const moveStreamOutput = require("./utils/move-stream-output");
+const displayDmenu = require("./utils/display-dmenu");
 
-const changeStreamDevice = function(){
-  //Get a list of every audio stream currently active
-  exec('pacmd list-sink-inputs', function(error, aOut, stderr){
-    const streams = parseStreams(aOut);
+module.exports = function changeStreamDevice(){
 
-    let streamsDList = '';
-    for(let i=0,L=streams.length;i<L;i++){
-      streamsDList += streams[i].applicationname + '\n';
-    }
+    let streamsArray;
+    let devicesArray;    
+    let selectedStream;
 
-    //Present the user with a choice of which app to switch
-    exec('echo "'+streamsDList+'" | dmenu', function(error, dOut, stderr){
-      dOut = dOut.slice(0,dOut.indexOf('\n'));//Trim the trailing new line char
-
-
-      //Grab a list of every audio output devices
-      exec('pacmd list-sinks', function(error, results, stderr){
-      	const devices = parseDevices(results);
-
-      	let dmenuItems;
-      	for(let i=0, L = devices.length; i < L; i++){
-      		dmenuItems += devices[i] + '\n';
-      	}
-
-        //Present the user with a choice of new output devices
-        exec('echo "'+dmenuItems+'" | dmenu', function(error, d2Out, stderr){
-          d2Out = d2Out.slice(0,d2Out.indexOf('\n'));//Trim the trailing new line char
-
-          //Change the selected stream to the selected device
-          exec('pactl move-sink-input ' + findStreamByAppName(streams, dOut).index + ' "' + d2Out +'"');
+    getOutputStreams().then(streams => {
+        streamsArray = streams;
+        let streamsDList = '';
+        for(let i=0,L=streams.length;i<L;i++){
+            streamsDList += streams[i].name + '\n';
+        }
+        
+        return displayDmenu(streamsDList);
+    }).then(selectedOption => {
+        selectedStream = streamsArray.find((obj) => {
+            return obj.name === selectedOption;
         });
-      });
+    }).then(() => {
+        return getOutputDevices();
+    }).then(devices => {
+        devicesArray = devices;
+        let dmenuItems = '';
+      	for(let i=0, L = devices.length; i < L; i++){
+      		dmenuItems += devices[i].name + '\n';
+      	}
+        return displayDmenu(dmenuItems);
+    }).then(selectedOption => {
+        return devicesArray.find((obj) => {
+                return obj.name === selectedOption;
+        });  
+    }).then(selectedDevice => {
+        return moveStreamOutput(selectedStream.index, selectedDevice.index);
+    }).catch(e => {
+        console.log(e);
     });
-  });
 };
-
-module.exports = changeStreamDevice;

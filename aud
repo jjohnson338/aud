@@ -1,19 +1,16 @@
 #!/usr/bin/node
 "use strict";
-const exec = require('child_process').exec;
+const displayDmenu = require("./src/utils/display-dmenu");
 const changeAudioStreamLevels = require('./src/changeAudioStreamLevels.js');
 const changeDefaultAudioDevice = require('./src/changeDefaultAudioDevice.js');
 const changeStreamDevice = require('./src/changeStreamDevice');
 
-var dMenuItems = 'default-audio-device\naudio-stream-levels\nchange-stream-device\n';
-
-exec('echo "'+dMenuItems + '" | dmenu', function(error, dOut, stderr){
-  dOut = dOut.slice(0,dOut.indexOf('\n'));//Trim new line
-
-  if(dOut === 'default-audio-device')
+displayDmenu('default-audio-device\naudio-stream-levels\nchange-stream-device\n').then(selectedOption => {
+    if(selectedOption === 'default-audio-device'){
       changeDefaultAudioDevice();
-  else if(dOut === 'audio-stream-levels')
+    } else if(selectedOption === 'audio-stream-levels') {
       changeAudioStreamLevels();
-  else if(dOut === 'change-stream-device')
+    } else if(selectedOption === 'change-stream-device'){
       changeStreamDevice();
+    }
 });
