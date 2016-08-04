@@ -14,7 +14,8 @@ module.exports = function changeStreamDevice(){
         streamsArray = streams;
         let streamsDList = '';
         for(let i=0,L=streams.length;i<L;i++){
-            streamsDList += streams[i].name + '\n';
+            streamsDList += streams[i].name;
+            streamsDList += i!=L-1 ? '\n' : '';
         }
         
         return displayDmenu(streamsDList);
@@ -28,7 +29,8 @@ module.exports = function changeStreamDevice(){
         devicesArray = devices;
         let dmenuItems = '';
       	for(let i=0, L = devices.length; i < L; i++){
-      		dmenuItems += devices[i].name + '\n';
+      		dmenuItems += devices[i].name;
+            dmenuItems += i!=L-1 ? '\n' : '';
       	}
         return displayDmenu(dmenuItems);
     }).then(selectedOption => {

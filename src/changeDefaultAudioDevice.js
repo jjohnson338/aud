@@ -14,7 +14,8 @@ module.exports = function changeDefaultAudioDevice(){
 
             let dmenuItems = '';
             for(let i=0, L = devices.length; i < L; i++){
-                dmenuItems += devices[i].name + '\n';
+                dmenuItems += devices[i].name;
+                dmenuItems += i!=L-1 ? '\n' : '';
             }
             return dmenuItems;
         }).then(dmenuItems => {

@@ -13,7 +13,8 @@ const changeAudioStreamLevels = function(){
         streamsArray = streams;
         let dMenuList = '';
         for(let i = 0, L = streams.length; i < L; i++){
-            dMenuList += streams[i].name + '\n';
+            dMenuList += streams[i].name;
+            dMenuList += i!=L-1 ? '\n' : '';
         }
         return dMenuList;
     }).then(dMenuList => {
@@ -23,7 +24,7 @@ const changeAudioStreamLevels = function(){
             return obj.name === selectedOption;
         });
     }).then(() => {
-        const percentageList = '0%\n10%\n20%\n30%\n40%\n50%\n60%\n70%\n80%\n90%\n100%\n';
+        const percentageList = '0%\n10%\n20%\n30%\n40%\n50%\n60%\n70%\n80%\n90%\n100%';
         return displayDmenu(percentageList);
     }).then(selectedPercentage => {
         

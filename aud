@@ -5,7 +5,7 @@ const changeAudioStreamLevels = require('./src/changeAudioStreamLevels.js');
 const changeDefaultAudioDevice = require('./src/changeDefaultAudioDevice.js');
 const changeStreamDevice = require('./src/changeStreamDevice');
 
-displayDmenu('default-audio-device\naudio-stream-levels\nchange-stream-device\n').then(selectedOption => {
+displayDmenu('default-audio-device\naudio-stream-levels\nchange-stream-device').then(selectedOption => {
     if(selectedOption === 'default-audio-device'){
       changeDefaultAudioDevice();
     } else if(selectedOption === 'audio-stream-levels') {
